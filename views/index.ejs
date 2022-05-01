@@ -1,34 +1,72 @@
+<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
+
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
+
+<script type="text/javascript">
+    $('#fid_table').DataTable();
+</script>
+
+<div class="jumbotron">
+    <h1>CPA02: Anime Finder </h1>
+    <p></p>
+</div>
+
+<p class="p-3 m-3 border border-primary bg-light">
+    Find anime and their ratings up to 2020
+</p>
 
 
-    <div class="jumbotron">
-        <h1>PA03: Course Finder Fall20-Spr21 </h1>
-        <p></p>
+<form method="post" action="/animes/byName">
+    Show Anime by Name:
+    <input type="text" name="name" placeholder="e.g. Cowboy Bebop">
+    <input type="submit">
+</form>
+<br>
+<form method="post" action="/animes/byInst">
+    Show Anime by Rating:
+    <input type="text" name="email" placeholder="e.g. 3">
+    <input type="submit">
+</form>
+<br>
+
+<div class="container">
+    <div class="tableFixHead" style="height:500px;overflow-y:auto;">
+        <table id="fid_table" class="table table-striped">
+            <thead style="position: sticky;" class="thead-dark">
+                <tr>
+                    <th class="header" scope="col">Name</th>
+                    <th class="header" scope="col">Japanese Name</th>
+                    <th class="header" scope="col">Score</th>
+                    <th class="header" scope="col">Genres</th>
+
+                </tr>
+            </thead>
+            <tbody>
+
+                <% 
+                           
+                 for (anime of animes) {
+                    %>
+                    <tr class="mb-2">
+                        <td>
+                            <%= anime['Name'] %>
+                        </td>
+                        <td>
+                            <%= anime['Japanese'] %>
+                        </td>
+
+                        <td>
+                            <%= anime['Score'] %>
+                        </td>
+
+                        <td>
+                            <%= anime['Genres'] %>
+                        </td>
+
+                    </tr>
+                    <% } %>
+            </tbody>
+        </table>
     </div>
-
-    <p class="p-3 m-3 border border-primary bg-light">
-        The goal of this assignment is to write an app that will let
-        students pick their courses for the year. Since we don't have 
-        the data for this year (due to workday issues), we will use the 
-        2020-2021 Academic year data. You must signup or login to see
-        the courses and create your schedule.
-    </p>
-    
-    <% if (true || loggedIn) {%>  
-        <form method="post" action="/courses/bySubject">
-            Show Courses by Subject: 
-              <input type="text" name="subject" 
-                     placeholder="e.g. COSI">
-            <input type="submit">
-        </form>
-        <br>
-        <form method="post" action="/courses/byInst">
-            Show Courses by Instructor Email: 
-            <input type="text" name="email" 
-                   placeholder="e.g. tjhickey">
-            <input type="submit">
-        </form>
-        <br>
-        <a href="/schedule/show">Show Schedule</a>
-    <% } %>
-
-
+</div>
