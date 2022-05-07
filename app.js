@@ -231,94 +231,14 @@ app.post('/animes/byName',
     }
 )
 
-app.get('/animes/show/:courseId',
-    // show all info about a course given its courseid
+app.post('/animes/byScore',
+    // show animes by score
     async(req, res, next) => {
-        const { courseId } = req.params;
-        const course = await Anime.findOne({ _id: courseId })
-        res.locals.course = course
-        res.locals.strTimes = animes.strTimes
-            //res.json(course)
-        res.render('course')
-    }
-)
-
-app.get('/animes/byInst/:email',
-    // show a list of all animes taught by a given faculty
-    async(req, res, next) => {
-        const email = req.params.email + "@brandeis.edu";
-        const animes = await Anime.find({ instructor: email, independent_study: false })
+        const { score } = req.body;
+        const animes = await Anime.find({ Score: score })
             //res.json(animes)
         res.locals.animes = animes
         res.render('courselist')
-    }
-)
-
-app.post('/animes/byInst',
-    // show animes taught by a faculty send from a form
-    async(req, res, next) => {
-        const email = req.body.email + "@brandeis.edu";
-        const animes =
-            await Anime
-            .find({ instructor: email, independent_study: false })
-            .sort({ term: 1, num: 1, section: 1 })
-            //res.json(animes)
-        res.locals.animes = animes
-        res.locals.strTimes = animes.strTimes
-        res.render('courselist')
-    }
-)
-
-app.use(isLoggedIn)
-
-app.get('/addCourse/:courseId',
-    // add a course to the user's schedule
-    async(req, res, next) => {
-        try {
-            const courseId = req.params.courseId
-            const userId = res.locals.user._id
-                // check to make sure it's not already loaded
-            const lookup = await Schedule.find({ courseId, userId })
-            if (lookup.length == 0) {
-                const schedule = new Schedule({ courseId, userId })
-                await schedule.save()
-            }
-            res.redirect('/schedule/show')
-        } catch (e) {
-            next(e)
-        }
-    })
-
-app.get('/schedule/show',
-    // show the current user's schedule
-    async(req, res, next) => {
-        try {
-            const userId = res.locals.user._id;
-            const courseIds =
-                (await Schedule.find({ userId }))
-                .sort(x => x.term)
-                .map(x => x.courseId)
-            res.locals.animes = await Anime.find({ _id: { $in: courseIds } })
-            res.render('schedule')
-        } catch (e) {
-            next(e)
-        }
-    }
-)
-
-app.get('/schedule/remove/:courseId',
-    // remove a course from the user's schedule
-    async(req, res, next) => {
-        try {
-            await Schedule.remove({
-                userId: res.locals.user._id,
-                courseId: req.params.courseId
-            })
-            res.redirect('/schedule/show')
-
-        } catch (e) {
-            next(e)
-        }
     }
 )
 
